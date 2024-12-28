@@ -27,17 +27,26 @@ async def on_message(message):
     if message.author == client.user:
         return
     
-    # There should be other conditions to prevent running the api call over and over
+    # prevents analysis on attachments
+    if message.attachments:
+        return
     
+    # prevents analysis on links 
+    if 'https://' in message.content:
+        return
+        
     score = toxicity_analysis(message.content)
     print(score)
 
+    # This value in this conditional is arbitrary 
     if score > 0.90:
         # the array answers, is defined in config.py and contains cdn's of images and responses
         # the random library picks any of these messages at random to send to the user
-        await message.channel.send(random.choice(answers))
+        await message.reply(random.choice(answers))
 
-def toxicity_analysis(message: str):
+    # TODO adding a tier list of some sort (tracks the most toxic messages :) )
+
+def toxicity_analysis(message: str) -> int:
     clienttwo = discovery.build(
     "commentanalyzer",
     "v1alpha1",
