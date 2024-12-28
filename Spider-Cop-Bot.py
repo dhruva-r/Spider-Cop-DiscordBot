@@ -4,10 +4,12 @@ import discord
 from googleapiclient import discovery
 import json
 import config
+import random
 
 # defined in a file called config.py (not pushed to github because that would not be wise :D)
 API_KEY = config.API_KEY
 DISCORD_TOKEN = config.DISCORD_TOKEN
+answers = config.responses 
 
 
 intents = discord.Intents.default()
@@ -31,7 +33,9 @@ async def on_message(message):
     print(score)
 
     if score > 0.90:
-        await message.channel.send('Shutup you toxic fucking bitch')
+        # the array answers, is defined in config.py and contains cdn's of images and responses
+        # the random library picks any of these messages at random to send to the user
+        await message.channel.send(random.choice(answers))
 
 def toxicity_analysis(message: str):
     clienttwo = discovery.build(
